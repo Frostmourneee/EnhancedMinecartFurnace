@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static io.github.frostmourneee.enhanced_minecart_furnace.EnhancedMinecartFurnace.customPrint;
+
 
 @Mixin( MinecartFurnace.class )
 public abstract class MinecartFurnaceMixin {
@@ -19,6 +21,7 @@ public abstract class MinecartFurnaceMixin {
 
     @Inject(method = "interact", at = @At("TAIL"))
     private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        customPrint(cart.fuel);
         if (cart.fuel > 0 && player.isPassenger()) {
             cart.xPush *= -1;
             cart.zPush *= -1;
