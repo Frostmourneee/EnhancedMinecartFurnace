@@ -9,9 +9,15 @@ EnhancedMinecartFurnace это мод для 1.19.3 версии майнкра�
 2) В ванильной игре вагонетка всегда уезжает от игрока, если дать ей топливо (ПКМ). Это неудобно, если игрок является пассажиром другой вагонетки и даёт топливо самоходной вагонетке, ведь тогда тягач уедет от пассажира. Мод исправляет такое поведение.
 3) Самоходная вагонетка убыстрена в два раза, т.е. теперь её скорость такая же, как у остальных вагонеток.
 
+###Неочевидные механики
+Воронка не заполняет топливом вагонетку, если вагонетка не стоит на рельсах
+
 ### English
 EnhancedMinecartFurnace is a 1.19.3 minecraft forge mod with small enhancements to minecart with furnace.
 Changes:
 1) Now hopper automatically fill fuel to the minecart with furnace.
 2) In vanilla minecraft, if a player fill fuel to the minecart then minecart will ride away from player. It's not convenient if a player is a passenger of another minecart and wants minecart with furnace to push him. Mod fixes this issue.
 3) Minecart with furnace speed increased twice, so now it is as fast as all other minecarts.
+
+###Non-obvious mechanics
+Hopper doesn't fill fuel to the minecart if a minecart is not on the rails 

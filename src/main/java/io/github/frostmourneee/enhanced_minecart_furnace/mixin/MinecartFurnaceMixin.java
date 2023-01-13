@@ -11,13 +11,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+
 @Mixin( MinecartFurnace.class )
 public abstract class MinecartFurnaceMixin {
 
-    @Inject(method = "interact", at = @At(value = "TAIL"))
-    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        MinecartFurnace cart = (MinecartFurnace) (Object) this;
+    private final MinecartFurnace cart = (MinecartFurnace) (Object) this;
 
+    @Inject(method = "interact", at = @At("TAIL"))
+    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (cart.fuel > 0 && player.isPassenger()) {
             cart.xPush *= -1;
             cart.zPush *= -1;
