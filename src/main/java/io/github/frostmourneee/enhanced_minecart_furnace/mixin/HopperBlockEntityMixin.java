@@ -34,17 +34,21 @@ public class HopperBlockEntityMixin {
         carts.removeIf(cart -> !level.getBlockState(cart.blockPosition()).is(BlockTags.RAILS));
 
         if (carts.isEmpty()) return;
+        boolean hasFuelItem = false;
+        for (int slot = 0; slot < hopperBE.getContainerSize(); slot++) {
+            if (MinecartFurnace.INGREDIENT.test(hopperBE.getItem(slot))) {
+                hasFuelItem = true;
+                break;
+            }
+        }
+        if (!hasFuelItem) return;
+
 
         level.setBlock(hopperBE.getBlockPos(), hopperBE.getBlockState().setValue
                       (FACING, Objects.requireNonNull(Direction.fromNormal(carts.get(0).blockPosition().subtract(hopperBE.getBlockPos())))), 2);
 
-        /*
-        for (int num = 0; num < 5; num++) {
-            Optional<HopperBlockEntity> hopperBEContainer = cart.level.getBlockEntity(neighbourPosWODiagonal(cart.blockPosition(), num), BlockEntityType.HOPPER);
-            if (hopperBEContainer.isEmpty()) continue;
+        for (MinecartFurnace cart : carts) {
 
-            HopperBlockEntity hopperBE = hopperBEContainer.get();
-            cart.level.setBlock(hopperBE.getBlockPos(), hopperBE.getBlockState().setValue(FACING, Direction.NORTH), 2);
-        }*/
+        }
     }
 }
