@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 
-import static io.github.frostmourneee.enhanced_minecart_furnace.EnhancedMinecartFurnace.customPrint;
 import static net.minecraft.world.level.block.HopperBlock.FACING;
 
 @Mixin(HopperBlockEntity.class)
@@ -35,17 +34,22 @@ public class HopperBlockEntityMixin {
         carts.removeIf(cart -> !level.getBlockState(cart.blockPosition()).is(BlockTags.RAILS));
         carts.removeIf(cart -> cart.fuel + FUEL_ADD_BY_HOPPER >= 32000);
 
-        if (carts.isEmpty() || !(level.getGameTime() % 8 == 0)) return;
+        if (carts.isEmpty() || hopperBE.cooldownTime > 0) return;
         boolean hasFuelItem = false;
-        for (int slot = 0; slot < hopperBE.getContainerSize(); slot++) {
+        int cartsFuelReceived = 0;
+        int oldCartsSize = carts.size();
+        for (int slot = 0; slot < hopperBE.getContainerSize() && cartsFuelReceived < oldCartsSize; slot++) {
             for (ItemStack itemStack : MinecartFurnace.INGREDIENT.getItems()) {
                 if (!itemStack.is(hopperBE.getItem(slot).getItem())) continue;
 
                 hasFuelItem = true;
-                for (MinecartFurnace cart : carts) {
-                    if (itemStack.getCount() == 0) break;
+                ArrayList<MinecartFurnace> notFueledCarts = new ArrayList<>(carts);
+                for (MinecartFurnace cart : notFueledCarts) {
+                    if (hopperBE.getItem(slot).getCount() == 0) break;
 
                     cart.fuel += FUEL_ADD_BY_HOPPER;
+                    cartsFuelReceived++;
+                    if (carts.size() > 1) carts.remove(cart);
                     hopperBE.getItem(slot).shrink(1);
                     switch (Direction.getNearest(cart.getDeltaMovement().x, cart.getDeltaMovement().y, cart.getDeltaMovement().z)) {
                         case NORTH -> {cart.xPush = 0.0D; cart.zPush = -1.0D;}
@@ -57,9 +61,11 @@ public class HopperBlockEntityMixin {
             }
         }
         if (!hasFuelItem) return;
+        hopperBE.setCooldown(10);
 
-        Direction hopperRotateDir = Direction.fromNormal(carts.get(0).blockPosition().subtract(hopperBE.getBlockPos()));
-        if (hopperRotateDir == null || hopperRotateDir.equals(hopperBE.getBlockState().getValue(FACING))) return;
+        Direction hopperRotateDir = Direction.getNearest
+                (carts.get(0).getX()-hopperBE.getLevelX(), carts.get(0).getY()-hopperBE.getLevelY(), carts.get(0).getZ()-hopperBE.getLevelZ());
+        if (hopperRotateDir.equals(hopperBE.getBlockState().getValue(FACING))) return;
         level.setBlock(hopperBE.getBlockPos(), hopperBE.getBlockState().setValue
                       (FACING, hopperRotateDir), 2);
     }
