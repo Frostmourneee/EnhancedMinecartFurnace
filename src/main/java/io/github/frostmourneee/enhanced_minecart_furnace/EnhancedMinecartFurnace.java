@@ -1,6 +1,5 @@
 package io.github.frostmourneee.enhanced_minecart_furnace;
 
-import net.minecraft.core.BlockPos;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(EnhancedMinecartFurnace.MODID)
